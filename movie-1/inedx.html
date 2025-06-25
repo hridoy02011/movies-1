@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineVerse Premium | Ultimate Movie Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e50914;
+            --primary-dark: #b2070f;
+            --dark: #141414;
+            --darker: #0a0a0a;
+            --light: #f5f5f5;
+            --gray: #808080;
+            --gray-dark: #333333;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Netflix Sans', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        @font-face {
+            font-family: 'Netflix Sans';
+            src: url('https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Md.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Header with Parallax Effect */
+        .header {
+            height: 100vh;
+            min-height: 600px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), 
+                        url('CINEVERSE.png') center/cover no-repeat fixed;
+            background-size: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+            z-index: 1;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 50px;
+            position: relative;
+            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: var(--dark);
+            box-shadow: var(--shadow);
+            padding: 15px 50px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: var(--text-shadow);
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--gray);
+            color: var(--light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            width: 0;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .search-box.active input {
+            width: 200px;
+            opacity: 1;
+            padding-left: 35px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light);
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid var(--primary-dark);
+        }
+
+        /* Hero Content */
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 50px;
+            max-width: 800px;
+            position: relative;
+            z-index: 5;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: var(--text-shadow);
+            line-height: 1.1;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .hero-meta span {
+            font-size: 1.1rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #f5c518;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            text-shadow: var(--text-shadow);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(109, 109, 110, 0.7);
+            color: var(--light);
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(109, 109, 110, 0.9);
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        .container {
+            padding: 50px;
+            background: var(--dark);
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .view-all:hover {
+            color: var(--light);
+        }
+
+        /* Movie Grid */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        /* Movie Card - Base Style */
+        .movie-card {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            aspect-ratio: 2/3;
+            background: var(--gray-dark);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Movie Card Image */
+        .movie-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        /* Movie Card Overlay */
+        .movie-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Movie Card Info */
+        .movie-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .movie-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #f5c518;
+        }
+
+        .movie-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            color: var(--light);
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Movie Card Hover Effect */
+        .movie-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .movie-card:hover .movie-poster {
+            transform: scale(1.1);
+            filter: brightness(0.7);
+        }
+
+        /* Special Badges */
+        .movie-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: var(--light);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Different Card Styles */
+        /* Style 1: Classic */
+        .card-classic .movie-overlay {
+            background: linear-gradient(to top, rgba(20,20,20,0.9) 0%, transparent 100%);
+        }
+
+        /* Style 2: Neon */
+        .card-neon {
+            border: 1px solid rgba(229, 9, 20, 0.3);
+        }
+
+        .card-neon:hover {
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
+        }
+
+        /* Style 3: Minimal */
+        .card-minimal {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .card-minimal .movie-overlay {
+            background: transparent;
+        }
+
+        .card-minimal .movie-title {
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        /* Style 4: Glass */
+        .card-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Style 5: Vintage */
+        .card-vintage {
+            border-radius: 0;
+        }
+
+        .card-vintage .movie-poster {
+            filter: sepia(0.3) contrast(1.1);
+        }
+
+        /* Style 6: Dark */
+        .card-dark {
+            background: #000;
+        }
+
+        .card-dark .movie-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+        }
+
+        /* Style 7: Light */
+        .card-light {
+            background: #f5f5f5;
+        }
+
+        .card-light .movie-title {
+            color: #333;
+        }
+
+        .card-light .movie-meta {
+            color: #666;
+        }
+
+        /* Style 8: Premium */
+        .card-premium {
+            border: 2px solid #f5c518;
+        }
+
+        .card-premium .movie-badge {
+            background: #f5c518;
+            color: #000;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .social-icons a {
+            color: var(--gray);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            .navbar {
+                padding: 20px 30px;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-description {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 30px;
+            }
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                min-height: 500px;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Parallax -->
+    <header class="header">
+        <!-- Navigation -->
+        <nav class="navbar" id="navbar">
+            <div class="logo">CINE<span>VERSE</span></div>
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">Movies</a>
+                <a href="#">TV Shows</a>
+                <a href="#">New & Popular</a>
+                <a href="#">My List</a>
+            </div>
+            <div class="user-menu">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search movies...">
+                </div>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <h1 class="hero-title">Stranger Things</h1>
+            <div class="hero-meta">
+                <span class="rating"><i class="fas fa-star"></i> 8.7/10</span>
+                <span>2022</span>
+                <span>4 Seasons</span>
+                <span>TV-MA</span>
+            </div>
+            <p class="hero-description">
+                When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary"><i class="fas fa-play"></i> Play</button>
+                <button class="btn btn-secondary"><i class="fas fa-info-circle"></i> More Info</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Trending Now Section -->
+        <div class="section-header">
+            <h2 class="section-title">Trending Now</h2>
+            <a href="#" class="view-all">View All</a>
+        </div>
+        <div class="movie-grid">
+            <!-- Card 1 - Classic -->
+            <div class="movie-card card-classic">
+                <div class="movie-badge">NEW</div>
+                <img src="https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" alt="Spider-Man: No Way Home" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Spider-Man: No Way Home</h3>
+                    <div class="movie-meta">
+                        <span>2021</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 8.2</span>
+                    </div>
+                    <div class="movie-actions">
+                        <button class="action-btn"><i class="fas fa-play"></i></button>
+                        <button class="action-btn"><i class="fas fa-plus"></i></button>
+                        <button class="action-btn"><i class="fas fa-thumbs-up"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 - Neon -->
+            <div class="movie-card card-neon">
+                <img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="The Batman" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">The Batman</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.9</span>
+                    </div>
+                    <div class="movie-actions">
+                        <button class="action-btn"><i class="fas fa-play"></i></button>
+                        <button class="action-btn"><i class="fas fa-plus"></i></button>
+                        <button class="action-btn"><i class="fas fa-thumbs-up"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 - Minimal -->
+            <div class="movie-card card-minimal">
+                <img src="https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg" alt="Top Gun: Maverick" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Top Gun: Maverick</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 8.3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 - Glass -->
+            <div class="movie-card card-glass">
+                <img src="https://image.tmdb.org/t/p/w500/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg" alt="Sonic the Hedgehog 2" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Sonic the Hedgehog 2</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 - Vintage -->
+            <div class="movie-card card-vintage">
+                <img src="https://image.tmdb.org/t/p/w500/14QbnygCuTO0vl7CAFmPf1fgZfV.jpg" alt="Dune" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Dune</h3>
+                    <div class="movie-meta">
+                        <span>2021</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.9</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 - Dark -->
+            <div class="movie-card card-dark">
+                <img src="https://image.tmdb.org/t/p/w500/odVv1sqVs0KxBXiA8bhIBlPgalx.jpg" alt="Morbius" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Morbius</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 6.2</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7 - Light -->
+            <div class="movie-card card-light">
+                <img src="https://image.tmdb.org/t/p/w500/wd7b4Nv9QBHDTIjc2m7sr0IUMoh.jpg" alt="Lightyear" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Lightyear</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8 - Premium -->
+            <div class="movie-card card-premium">
+                <div class="movie-badge">PREMIUM</div>
+                <img src="https://image.tmdb.org/t/p/w500/6zbKgwgaaCyyBXE4Sun4oWQfQmi.jpg" alt="The Northman" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">The Northman</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Continue Watching Section -->
+        <div class="section-header">
+            <h2 class="section-title">Continue Watching</h2>
+            <a href="#" class="view-all">View All</a>
+        </div>
+        <div class="movie-grid">
+            <!-- Additional cards with different styles -->
+            <!-- Card 9 -->
+            <div class="movie-card">
+                <div class="progress-bar" style="width: 65%"></div>
+                <img src="https://image.tmdb.org/t/p/w500/1uegRjvcwXEK4XfyHq9QkGZ3Qie.jpg" alt="Doctor Strange" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Doctor Strange in the Multiverse of Madness</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 10 -->
+            <div class="movie-card">
+                <div class="progress-bar" style="width: 30%"></div>
+                <img src="https://image.tmdb.org/t/p/w500/6OEBp0Gqv6DA2WgHwJ6B1sxmcQJ.jpg" alt="The Lost City" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">The Lost City</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 6.7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 11 -->
+            <div class="movie-card">
+                <div class="progress-bar" style="width: 80%"></div>
+                <img src="https://image.tmdb.org/t/p/w500/3G1Q5xF40HkUBJXxt2DQgQzKTp5.jpg" alt="Uncharted" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">Uncharted</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 7.0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 12 -->
+            <div class="movie-card">
+                <div class="progress-bar" style="width: 45%"></div>
+                <img src="https://image.tmdb.org/t/p/w500/6EdKBY7clrOIvYvjZ9szYjJELPH.jpg" alt="The Adam Project" class="movie-poster">
+                <div class="movie-overlay">
+                    <h3 class="movie-title">The Adam Project</h3>
+                    <div class="movie-meta">
+                        <span>2022</span>
+                        <span class="movie-rating"><i class="fas fa-star"></i> 6.9</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#">Audio Description</a>
+            <a href="#">Help Center</a>
+            <a href="#">Gift Cards</a>
+            <a href="#">Media Center</a>
+            <a href="#">Investor Relations</a>
+            <a href="#">Jobs</a>
+            <a href="#">Terms of Use</a>
+            <a href="#">Privacy</a>
+            <a href="#">Legal Notices</a>
+            <a href="#">Cookie Preferences</a>
+            <a href="#">Corporate Information</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">© 2023 CineVerse. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Search Box Toggle
+        const searchIcon = document.querySelector('.search-box i');
+        const searchInput = document.querySelector('.search-box input');
+        
+        searchIcon.addEventListener('click', () => {
+            document.querySelector('.search-box').classList.toggle('active');
+            if (document.querySelector('.search-box').classList.contains('active')) {
+                searchInput.focus();
+            }
+        });
+
+        // Generate 200+ movie cards dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            const movieGrids = document.querySelectorAll('.movie-grid');
+            const movieTitles = [
+                "Avengers: Endgame", "Black Panther", "Jurassic World", "The Matrix", "Inception",
+                "Interstellar", "The Dark Knight", "Pulp Fiction", "Fight Club", "Forrest Gump",
+                "The Shawshank Redemption", "The Godfather", "Titanic", "Gladiator", "Braveheart",
+                "The Lord of the Rings", "Harry Potter", "Star Wars", "Indiana Jones", "Back to the Future",
+                "E.T. the Extra-Terrestrial", "Jaws", "The Exorcist", "Alien", "Predator",
+                "Terminator", "RoboCop", "Die Hard", "Mission: Impossible", "James Bond",
+                "Pirates of the Caribbean", "Transformers", "Fast & Furious", "The Hunger Games", "Twilight",
+                "The Social Network", "The Wolf of Wall Street", "Goodfellas", "Scarface", "Casino",
+                "The Silence of the Lambs", "Se7en", "Zodiac", "Gone Girl", "The Girl with the Dragon Tattoo",
+                "The Grand Budapest Hotel", "Moonrise Kingdom", "The Royal Tenenbaums", "Fantastic Mr. Fox", "Isle of Dogs"
+            ];
+            
+            const posterPaths = [
+                "/qAZ0pzat24kLdO3o8ejmbLxyOac.jpg", "/uxzzxijgPIY7slzFvMotPv8wjKA.jpg", "/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg",
+                "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg", "/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg", "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+                "/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg", "/dM2w364MScsjFf8pfMbaWUcWrR.jpg", "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+                "/yPisjyLweCl1tbgwgtzBCNCBle.jpg", "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg", "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+                "/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg", "/6hKBPPOV9tv9vThgTqKt04CvoyM.jpg", "/or1gBugydmjToAEq7OZYERO6AkI.jpg",
+                "/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg", "/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg", "/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg",
+                "/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg", "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg", "/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
+                "/s2bT29y0ngXxxu2IA5AOzzXTRhd.jpg", "/6sOX6h3dC2fXJYnJd0QZbUQ9yZ5.jpg", "/vfrQk5IPloGg1v9Rzbh2Eg3VGyM.jpg",
+                "/9uGHEgsiUXjCNq8wdq4r49YL8A1.jpg", "/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg", "/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg",
+                "/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg", "/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg", "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg",
+                "/tWqifoYuwLETmmasnGHO7xBjEtt.jpg", "/s2bT29y0ngXxxu2IA5AOzzXTRhd.jpg", "/6sOX6h3dC2fXJYnJd0QZbUQ9yZ5.jpg",
+                "/vfrQk5IPloGg1v9Rzbh2Eg3VGyM.jpg", "/9uGHEgsiUXjCNq8wdq4r49YL8A1.jpg", "/qAZ0pzat24kLdO3o8ejmbLxyOac.jpg",
+                "/uxzzxijgPIY7slzFvMotPv8wjKA.jpg", "/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg", "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+                "/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg", "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", "/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg",
+                "/dM2w364MScsjFf8pfMbaWUcWrR.jpg", "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg", "/yPisjyLweCl1tbgwgtzBCNCBle.jpg"
+            ];
+            
+            const cardStyles = [
+                "card-classic", "card-neon", "card-minimal", "card-glass", 
+                "card-vintage", "card-dark", "card-light", "card-premium"
+            ];
+            
+            movieGrids.forEach(grid => {
+                // Only fill grids that have less than 8 items
+                if (grid.children.length < 8) {
+                    for (let i = 0; i < 20; i++) {
+                        const randomTitle = movieTitles[Math.floor(Math.random() * movieTitles.length)];
+                        const randomYear = Math.floor(Math.random() * 30) + 1990;
+                        const randomRating = (Math.random() * 3 + 5).toFixed(1);
+                        const randomPoster = posterPaths[Math.floor(Math.random() * posterPaths.length)];
+                        const randomStyle = cardStyles[Math.floor(Math.random() * cardStyles.length)];
+                        
+                        const movieCard = document.createElement('div');
+                        movieCard.className = `movie-card ${randomStyle}`;
+                        
+                        // 20% chance to add a badge
+                        if (Math.random() > 0.8) {
+                            const badgeTypes = ["NEW", "HOT", "TRENDING", "PREMIUM"];
+                            const randomBadge = badgeTypes[Math.floor(Math.random() * badgeTypes.length)];
+                            movieCard.innerHTML += `<div class="movie-badge">${randomBadge}</div>`;
+                        }
+                        
+                        movieCard.innerHTML += `
+                            <img src="https://image.tmdb.org/t/p/w500${randomPoster}" alt="${randomTitle}" class="movie-poster">
+                            <div class="movie-overlay">
+                                <h3 class="movie-title">${randomTitle}</h3>
+                                <div class="movie-meta">
+                                    <span>${randomYear}</span>
+                                    <span class="movie-rating"><i class="fas fa-star"></i> ${randomRating}</span>
+                                </div>
+                                <div class="movie-actions">
+                                    <button class="action-btn"><i class="fas fa-play"></i></button>
+                                    <button class="action-btn"><i class="fas fa-plus"></i></button>
+                                    <button class="action-btn"><i class="fas fa-thumbs-up"></i></button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // 50% chance to add progress bar for "Continue Watching" section
+                        if (grid.previousElementSibling.textContent.includes("Continue Watching") && Math.random() > 0.5) {
+                            const progress = Math.floor(Math.random() * 100);
+                            movieCard.innerHTML = `<div class="progress-bar" style="width: ${progress}%"></div>` + movieCard.innerHTML;
+                        }
+                        
+                        grid.appendChild(movieCard);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
